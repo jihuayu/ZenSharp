@@ -9,6 +9,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
+group = 'zenscript'
+archivesBaseName = 'ZenScript'
 version = "1.0.0"
 
 if(project.hasProperty("craftTweakerVersion")){
@@ -121,10 +123,12 @@ publishing {
     }
 
     repositories {
-
         maven {
-
-            url "file://" + System.getenv("local_maven")
+            url = "https://maven2.jihuayu.site/releases"
+            credentials {
+                username = System.getenv('MAVEN_ADMIN_NAME')
+                password = System.getenv('MAVEN_ADMIN_TOKEN')
+            }
         }
     }
 }
