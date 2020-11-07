@@ -79,7 +79,12 @@ public class ParsedClassConstructor {
         EnvironmentMethod initEnvironment = new EnvironmentMethod(init, environmentNewClass);
         init.start();
         init.loadObject(0);
-        init.invokeSpecial(ZenTypeUtil.internal(parent.toJavaClass()), "<init>", "()V");
+        if (parent==null){
+            init.invokeSpecial(ZenTypeUtil.internal(Object.class), "<init>", "()V");
+        }
+        else {
+            init.invokeSpecial(ZenTypeUtil.internal(parent.toJavaClass()), "<init>", "()V");
+        }
 
         for(ParsedZenClassField nonStatic : nonStatics) {
             if(!nonStatic.hasInitializer())

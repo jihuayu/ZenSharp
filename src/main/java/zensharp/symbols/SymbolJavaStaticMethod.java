@@ -1,6 +1,5 @@
 package zensharp.symbols;
 
-
 import zensharp.type.natives.IJavaMethod;
 import zensharp.util.ZenPosition;
 import zensharp.expression.partial.IPartialExpression;

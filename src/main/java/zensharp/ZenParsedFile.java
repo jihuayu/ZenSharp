@@ -5,11 +5,13 @@ package zensharp;
 import zensharp.definitions.Import;
 import zensharp.definitions.ParsedFunction;
 import zensharp.definitions.ParsedGlobalValue;
+import zensharp.definitions.zenInterface.ParsedZenInterface;
 import zensharp.definitions.zenclasses.ParsedZenClass;
 import zensharp.expression.partial.IPartialExpression;
 import zensharp.parser.Token;
 import zensharp.statements.Statement;
 
+import zensharp.symbols.SymbolZenInterface;
 import zensharp.type.ZenType;
 import zensharp.compiler.EnvironmentScript;
 import zensharp.compiler.IEnvironmentGlobal;
@@ -144,6 +146,15 @@ public class ZenParsedFile {
                 else {
                     classes.put(parsedZenClass.name, parsedZenClass);
                     environmentScript.putValue(parsedZenClass.name, new SymbolZenClass(parsedZenClass.type), parsedZenClass.position);
+                }
+                parsedZenClass.writeClass(environmentScript);
+            } else if(next.getType() == ZenTokener.T_ZEN_INTERFACE) {
+                ParsedZenInterface parsedZenClass = ParsedZenInterface.parse(tokener, environmentScript);
+                if(classes.containsKey(parsedZenClass.name))
+                    environment.error(parsedZenClass.position, "Interface " + parsedZenClass.name + " already exists!");
+                else {
+//                    classes.put(parsedZenClass.name, parsedZenClass);
+                    environmentScript.putValue(parsedZenClass.name, new SymbolZenInterface(parsedZenClass.type), parsedZenClass.position);
                 }
                 parsedZenClass.writeClass(environmentScript);
             } else {

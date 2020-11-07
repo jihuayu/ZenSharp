@@ -255,6 +255,11 @@ public class JavaMethod implements IJavaMethod {
     }
 
     @Override
+    public boolean isDeclare() {
+        return false;
+    }
+
+    @Override
     public boolean isStatic() {
         return (method.getModifiers() & Modifier.STATIC) > 0;
     }

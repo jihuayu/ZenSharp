@@ -3,6 +3,7 @@ package zensharp;
 import zensharp.annotations.ZenClass;
 import zensharp.annotations.ZenConstructor;
 import zensharp.annotations.ZenMethod;
+import zensharp.annotations.ZenProperty;
 
 @ZenClass("test.A")
 public class ZenTestClassA {
@@ -14,14 +15,29 @@ public class ZenTestClassA {
     @ZenClass("test.Pt")
     public static class PT extends ZenTestClassA{
 
+        @ZenProperty("oou")
+        public int i =100;
+
         @ZenConstructor
         public PT(){
-
+            this.i = 1001;
         }
 
         @ZenMethod("t")
         public void t(){
             System.out.println("114514");
         }
+    }
+
+    @ZenClass("test.Pi")
+    public interface PI{
+        @ZenMethod
+        int a();
+    }
+
+    @ZenClass("test.Pi2")
+    public interface PI2{
+        @ZenMethod
+        int b();
     }
 }

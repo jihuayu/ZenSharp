@@ -122,11 +122,11 @@ public abstract class Statement {
     }
 
     public abstract void compile(IEnvironmentMethod environment);
-    
+
     public List<Statement> getSubStatements() {
         return Collections.singletonList(this);
     }
-    
+
     public void compile(IEnvironmentMethod environment, boolean forced) {
         environment.getOutput().position(getPosition());
         compile(environment);

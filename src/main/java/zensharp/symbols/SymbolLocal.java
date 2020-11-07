@@ -1,6 +1,5 @@
 package zensharp.symbols;
 
-
 import zensharp.type.ZenType;
 import zensharp.util.ZenPosition;
 import zensharp.expression.partial.IPartialExpression;

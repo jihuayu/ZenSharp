@@ -77,7 +77,12 @@ public class JavaMethodGenerated implements IJavaMethod {
             return true;
         }
     }
-    
+
+    @Override
+    public boolean isDeclare() {
+        return false;
+    }
+
     @Override
     public boolean accepts(IEnvironmentGlobal environment, Expression... arguments) {
         return getPriority(environment, arguments) > 0;

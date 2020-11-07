@@ -52,7 +52,7 @@ public class ZenTokener extends TokenStream {
     public static final int T_BRCLOSE = 31;
     public static final int T_TILDEASSIGN = 45;
     public static final int T_TILDE = 32;
-    public static final int T_SEMICOLON = 33;
+    public static final int T_SEMICOLON = 33; //;
     public static final int T_LTEQ = 34;
     public static final int T_LT = 35;
     public static final int T_GTEQ = 36;
@@ -119,6 +119,7 @@ public class ZenTokener extends TokenStream {
         KEYWORDS.put("double", T_DOUBLE);
         KEYWORDS.put("string", T_STRING);
         KEYWORDS.put("function", T_FUNCTION);
+        KEYWORDS.put("fun", T_FUNCTION);
         KEYWORDS.put("in", T_IN);
         KEYWORDS.put("has", T_IN);
         KEYWORDS.put("void", T_VOID);
@@ -146,12 +147,18 @@ public class ZenTokener extends TokenStream {
 
         KEYWORDS.put("extends", T_ZEN_EXTEND);
         KEYWORDS.put("implements", T_ZEN_IMPL);
+        KEYWORDS.put("impl", T_ZEN_IMPL);
 
         KEYWORDS.put("frigginClass", T_ZEN_CLASS);
         KEYWORDS.put("frigginConstructor", T_ZEN_CONSTRUCTOR);
+
         KEYWORDS.put("zenClass", T_ZEN_CLASS);
-        KEYWORDS.put("zenInterface", T_ZEN_IMPL);
+        KEYWORDS.put("zenInterface", T_ZEN_INTERFACE);
         KEYWORDS.put("zenConstructor", T_ZEN_CONSTRUCTOR);
+
+        KEYWORDS.put("class", T_ZEN_CLASS);
+        KEYWORDS.put("interface", T_ZEN_INTERFACE);
+        KEYWORDS.put("constructor", T_ZEN_CONSTRUCTOR);
     }
     
     private final IZenCompileEnvironment environment;

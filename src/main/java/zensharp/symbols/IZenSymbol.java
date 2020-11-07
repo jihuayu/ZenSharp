@@ -1,6 +1,5 @@
 package zensharp.symbols;
 
-
 import zensharp.dump.IDumpConvertable;
 import zensharp.dump.IDumpable;
 import zensharp.dump.types.DumpDummy;

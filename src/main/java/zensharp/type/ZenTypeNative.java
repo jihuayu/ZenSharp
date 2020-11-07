@@ -50,6 +50,7 @@ public class ZenTypeNative extends ZenType {
     private static final int ITERATOR_MAP = 3;
     
     private final Class<?> cls;
+    private final boolean isInterface;
     private final String anyName;
     private final String anyName2;
     private final List<ZenTypeNative> implementing;
@@ -78,7 +79,7 @@ public class ZenTypeNative extends ZenType {
         unaryOperators = new ArrayList<>();
         implementing = new ArrayList<>();
         constructors = new ArrayList<>();
-        
+        isInterface = cls.isInterface();
         anyName2 = cls.getName() + "Any";
         anyName = anyName2.replace('.', '/');
     }

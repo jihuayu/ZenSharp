@@ -37,7 +37,12 @@ public class ZenFieldMethod implements IJavaMethod {
     public boolean accepts(IEnvironmentGlobal environment, Expression... arguments) {
         return arguments.length == (isSetter ? 1 : 0);
     }
-    
+
+    @Override
+    public boolean isDeclare() {
+        return false;
+    }
+
     @Override
     public int getPriority(IEnvironmentGlobal environment, Expression... arguments) {
         return 0;

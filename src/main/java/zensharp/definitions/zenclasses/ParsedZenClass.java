@@ -3,7 +3,7 @@ package zensharp.definitions.zenclasses;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import zensharp.ZenTokener;
-
+import zensharp.compiler.*;
 import zensharp.definitions.ParsedFunction;
 import zensharp.expression.Expression;
 import zensharp.expression.ExpressionInvalid;
@@ -14,10 +14,10 @@ import zensharp.symbols.SymbolType;
 import zensharp.type.ZenType;
 import zensharp.type.ZenTypeNative;
 import zensharp.type.ZenTypeZenClass;
+import zensharp.type.ZenTypeZenInterface;
 import zensharp.type.natives.ZenNativeMember;
 import zensharp.util.MethodOutput;
 import zensharp.util.ZenPosition;
-import zensharp.compiler.*;
 
 import java.util.*;
 
@@ -36,7 +36,7 @@ public class ParsedZenClass {
     private final List<ParsedZenClassField> nonStatics = new LinkedList<>();
     private final List<ParsedZenClassMethod> methods = new LinkedList<>();
     private final Map<String, ZenNativeMember> members = new LinkedHashMap<>();
-    public Class thisClass;
+    public Class<?> thisClass;
 
     public ParsedZenClass(ZenPosition position, String name, String className, EnvironmentScript classEnvironment, ZenType parentClassType, List<ZenType> implClassNames) {
         this.position = position;
@@ -64,8 +64,10 @@ public class ParsedZenClass {
         }
         if (parser.isNext(ZenTokener.T_ZEN_IMPL)) {
             parser.next();
-            if (parser.isNext(ZenTokener.T_ID)) {
-                ZenType type = ZenType.read(parser, environmentGlobal);
+            ZenType type = ZenType.read(parser, environmentGlobal);
+            implClass.add(type);
+            if (parser.optional(ZenTokener.T_COMMA) != null) {
+                type = ZenType.read(parser, environmentGlobal);
                 implClass.add(type);
             }
         }
@@ -77,12 +79,21 @@ public class ParsedZenClass {
         ParsedZenClass classTemplate = new ParsedZenClass(position, name, environmentGlobal.makeClassNameWithMiddleName(position.getFile().getClassName() + "_" + name + "_"), classEnvironment, parentClass, implClass);
         classEnvironment.putValue(name, new SymbolType(classTemplate.type), classTemplate.position);
 
-        if (classTemplate.parentClassType instanceof ZenTypeZenClass){
+        if (classTemplate.parentClassType instanceof ZenTypeZenClass) {
             classTemplate.members.putAll(((ZenTypeZenClass) classTemplate.parentClassType).zenClass.members);
         }
-        if (classTemplate.parentClassType instanceof ZenTypeNative){
+        else if (classTemplate.parentClassType instanceof ZenTypeNative) {
             classTemplate.members.putAll(((ZenTypeNative) classTemplate.parentClassType).getMembers());
         }
+
+//        for (ZenType i : implClass){
+//            if (i instanceof ZenTypeZenInterface){
+//                classTemplate.members.putAll(((ZenTypeZenInterface) i).zenClass.getMembers());
+//            }
+//            else if (i instanceof ZenTypeNative){
+//                classTemplate.members.putAll(((ZenTypeNative)i).getMembers());
+//            }
+//        }
 
         Token keyword;
         boolean constructorFlag = false;
@@ -102,7 +113,7 @@ public class ParsedZenClass {
                     classTemplate.addMethod(ParsedZenClassMethod.parse(parser, classEnvironment, classTemplate.className));
             }
         }
-        if (!constructorFlag){
+        if (!constructorFlag) {
             classTemplate.addConstructor(ParsedClassConstructor.empty());
         }
 
@@ -165,11 +176,7 @@ public class ParsedZenClass {
         //ZS ASM STUFF
         byte[] thisClassArray = newClass.toByteArray();
         environmentGlobal.putClass(className, thisClassArray);
-        thisClass = new ClassLoader() {
-            private Class<?> find(byte[] array) {
-                return defineClass(className, array, 0, array.length);
-            }
-        }.find(thisClassArray);
+        thisClass = environmentGlobal.loader.find(className,thisClassArray);
     }
 
     private void visitNonStatics(ClassWriter newClass) {

@@ -19,14 +19,26 @@ public class ZenMain {
         genericRegistry.registerGlobal("println", genericRegistry.getStaticFunction(ZenMain.class, "println", String.class));
         genericRegistry.registerNativeClass(ZenTestClassA.class);
         genericRegistry.registerNativeClass(ZenTestClassA.PT.class);
+        genericRegistry.registerNativeClass(ZenTestClassA.PI.class);
+        genericRegistry.registerNativeClass(ZenTestClassA.PI2.class);
 
         try {
             final StringJoiner builder = new StringJoiner("\n");
-            builder.add("import test.Pt;");
-            builder.add("zenClass A extends Pt{}");
-            builder.add("var tt = A();");
-            builder.add("tt.t();");
-            //final String script = "println('hello');";
+//            builder.add("interface A{");
+//            builder.add("fun pp() as void;");
+//            builder.add("}");
+//            builder.add("class B impl A{");
+//            builder.add("fun pp() as void{");
+//            builder.add("println('111');");
+//            builder.add("}");
+//            builder.add("}");
+//            builder.add("var b = B();");
+//            builder.add("b.pp();");
+
+            builder.add("var pp1 = function() as void {println('111');};");
+            builder.add("var pp2 = function() as void {println('222');};");
+            builder.add("pp2();");
+            builder.add("pp1();");
             final String script = builder.toString();
             ZenModule module = ZenModule.compileScriptString(script, "test.zs", environment, ZenMain.class.getClassLoader());
             Runnable runnable = module.getMain();

@@ -85,6 +85,11 @@ public class ParsedZenClassField {
         }
 
         @Override
+        public boolean isDeclare() {
+            return false;
+        }
+
+        @Override
         public boolean isStatic() {
             return ParsedZenClassField.this.isStatic;
         }

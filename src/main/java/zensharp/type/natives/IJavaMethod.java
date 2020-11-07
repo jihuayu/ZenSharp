@@ -11,7 +11,9 @@ import zensharp.util.MethodOutput;
 public interface IJavaMethod {
     
     boolean isStatic();
-    
+
+    boolean isDeclare();
+
     boolean accepts(int numArguments);
     
     boolean accepts(IEnvironmentGlobal environment, Expression... arguments);

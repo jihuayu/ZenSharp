@@ -6,6 +6,7 @@ import org.objectweb.asm.Type;
 
 import zensharp.annotations.CompareType;
 import zensharp.annotations.OperatorType;
+import zensharp.expression.ExpressionNull;
 import zensharp.expression.partial.IPartialExpression;
 import zensharp.type.casting.ICastingRuleDelegate;
 import zensharp.util.ZenPosition;
@@ -136,6 +137,6 @@ public class ZenTypeVoid extends ZenType {
     
     @Override
     public Expression defaultValue(ZenPosition position) {
-        throw new RuntimeException("void has no default value");
+        return new ExpressionNull(position);
     }
 }
