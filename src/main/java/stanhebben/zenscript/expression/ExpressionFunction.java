@@ -102,7 +102,7 @@ public class ExpressionFunction extends Expression {
         functionType.writeInterfaceClass(environment);
         
         ClassWriter cw = new ZenClassWriter(ClassWriter.COMPUTE_FRAMES);
-        cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", new String[]{functionType.getInterfaceName()});
+        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", new String[]{functionType.getInterfaceName()});
         cw.visitSource(getPosition().getFileName(), null);
         
         MethodOutput output = new MethodOutput(cw, Opcodes.ACC_PUBLIC, "accept", functionType.getDescriptor(), null, null);

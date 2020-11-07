@@ -107,7 +107,7 @@ public class ZenTypeFunctionCallable extends ZenTypeFunction {
         }
     
         ClassWriter cw = new ZenClassWriter(ClassWriter.COMPUTE_FRAMES);
-        cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC | Opcodes.ACC_INTERFACE | Opcodes.ACC_ABSTRACT | Opcodes.ACC_SYNTHETIC, interfaceName, null, "java/lang/Object", new String[0]);
+        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_INTERFACE | Opcodes.ACC_ABSTRACT | Opcodes.ACC_SYNTHETIC, interfaceName, null, "java/lang/Object", new String[0]);
         cw.visitSource("generated_interface", null);
         final MethodVisitor accept = cw.visitMethod(Opcodes.ACC_PUBLIC | Opcodes.ACC_ABSTRACT, "accept", descriptor, null, null);
         accept.visitEnd();

@@ -17,17 +17,15 @@ public class ZenMain {
         final GenericRegistry genericRegistry = new GenericRegistry(environment, errorLogger);
 
         genericRegistry.registerGlobal("println", genericRegistry.getStaticFunction(ZenMain.class, "println", String.class));
+        genericRegistry.registerNativeClass(ZenTestClassA.class);
+        genericRegistry.registerNativeClass(ZenTestClassA.PT.class);
 
         try {
             final StringJoiner builder = new StringJoiner("\n");
-            builder.add("var myTestFun as function(string)void = function(s as string) as void {println(s);};");
-            builder.add("myTestFun('Hello World');");
-            builder.add("function myAcceptFun(consumer as function(string)void) as void {");
-            builder.add("   consumer('hello from inside myAcceptFun');");
-            builder.add("}");
-            builder.add("myAcceptFun(myTestFun);");
-            builder.add("myAcceptFun(function(s as string) as void {println('Another thing: ' ~ s);});");
-            
+            builder.add("import test.Pt;");
+            builder.add("zenClass As extends Pt{}");
+            builder.add("var tt = As();");
+            builder.add("tt.t();");
             //final String script = "println('hello');";
             final String script = builder.toString();
             ZenModule module = ZenModule.compileScriptString(script, "test.zs", environment, ZenMain.class.getClassLoader());

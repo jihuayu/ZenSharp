@@ -26,7 +26,11 @@ public class ParsedClassConstructor {
         this.names = names.toArray(new String[names.size()]);
         this.statements = statements;
     }
-
+    private ParsedClassConstructor() {
+        this.types = new ZenType[0];
+        this.names = new String[0];
+        this.statements = new LinkedList<>();
+    }
 
     static ParsedClassConstructor parse(ZenTokener parser, IEnvironmentGlobal environment) {
         parser.required(T_BROPEN, "( Needed");
@@ -52,6 +56,10 @@ public class ParsedClassConstructor {
         return new ParsedClassConstructor(types, names, statements);
     }
 
+    static ParsedClassConstructor empty() {
+        return new ParsedClassConstructor();
+    }
+
     public String getDescription() {
         StringBuilder builder = new StringBuilder("(");
         for(ZenType type : types) {
@@ -60,12 +68,12 @@ public class ParsedClassConstructor {
         return builder.append(")V").toString();
     }
 
-    public void writeAll(IEnvironmentClass environmentNewClass, ClassVisitor newClass, List<ParsedZenClassField> nonStatics, String className, ZenPosition position) {
+    public void writeAll(IEnvironmentClass environmentNewClass, ClassVisitor newClass, List<ParsedZenClassField> nonStatics, String className, ZenPosition position,ZenType parent) {
         final MethodOutput init = new MethodOutput(newClass, Opcodes.ACC_PUBLIC, "<init>", this.getDescription(), null, null);
         EnvironmentMethod initEnvironment = new EnvironmentMethod(init, environmentNewClass);
         init.start();
         init.loadObject(0);
-        init.invokeSpecial(internal(Object.class), "<init>", "()V");
+        init.invokeSpecial(internal(parent.toJavaClass()), "<init>", "()V");
 
         for(ParsedZenClassField nonStatic : nonStatics) {
             if(!nonStatic.hasInitializer())

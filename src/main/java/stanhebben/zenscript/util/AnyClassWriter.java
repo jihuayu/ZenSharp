@@ -65,7 +65,7 @@ public class AnyClassWriter {
     public static byte[] construct(IAnyDefinition definition, String name, Type asmType) {
         try {
             ClassWriter writer = new ZenClassWriter(ClassWriter.COMPUTE_FRAMES);
-            writer.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, name, null, internal(Object.class), new String[]{internal(IAny.class)});
+            writer.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, name, null, internal(Object.class), new String[]{internal(IAny.class)});
             
             definition.defineMembers(writer);
             

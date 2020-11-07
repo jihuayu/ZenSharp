@@ -38,7 +38,7 @@ public class CastingRuleMatchedFunction implements ICastingRule {
         final String className = outerEnvironment.makeClassNameWithMiddleName("generated_bridge_class");
         
         final ZenClassWriter classWriter = new ZenClassWriter(ClassWriter.COMPUTE_FRAMES);
-        classWriter.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", new String[]{Type.getInternalName(aClass)});
+        classWriter.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, className, null, "java/lang/Object", new String[]{Type.getInternalName(aClass)});
         classWriter.visitSource("generated_classfile", null);
         classWriter.visitField(Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL, "wrappedFun", fromType.getSignature(), null, null)
                 .visitEnd();

@@ -22,11 +22,23 @@ public class ZenNativeMember {
     private final List<IJavaMethod> methods = new ArrayList<>();
     private IJavaMethod getter;
     private IJavaMethod setter;
-    
+    private final boolean isParent;
+
+    public ZenNativeMember(){
+        this(false);
+    }
+    public ZenNativeMember(boolean isParent){
+        this.isParent=isParent;
+    }
+
+    public boolean isParent() {
+        return isParent;
+    }
+
     public IJavaMethod getGetter() {
         return getter;
     }
-    
+
     public void setGetter(IJavaMethod getter) {
         if(this.getter == null) {
             this.getter = getter;

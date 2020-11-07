@@ -88,8 +88,12 @@ public class ZenTokener extends TokenStream {
     public static final int T_GLOBAL = 666;
     public static final int T_STATIC = 667;
     public static final int T_INSTANCEOF = 668;
-    
+
+    public static final int T_ZEN_EXTEND = 114514;
+    public static final int T_ZEN_IMPL = 4389438;
+
     public static final int T_ZEN_CLASS = 123456789;
+    public static final int T_ZEN_INTERFACE = 1314520;
     public static final int T_ZEN_CONSTRUCTOR = 987654321;
     
     private static final HashMap<String, Integer> KEYWORDS;
@@ -135,11 +139,14 @@ public class ZenTokener extends TokenStream {
         KEYWORDS.put("false", T_FALSE);
         
         KEYWORDS.put("import", T_IMPORT);
-        
-        
+
+        KEYWORDS.put("extends", T_ZEN_EXTEND);
+        KEYWORDS.put("implements", T_ZEN_IMPL);
+
         KEYWORDS.put("frigginClass", T_ZEN_CLASS);
         KEYWORDS.put("frigginConstructor", T_ZEN_CONSTRUCTOR);
         KEYWORDS.put("zenClass", T_ZEN_CLASS);
+        KEYWORDS.put("zenInterface", T_ZEN_IMPL);
         KEYWORDS.put("zenConstructor", T_ZEN_CONSTRUCTOR);
     }
     

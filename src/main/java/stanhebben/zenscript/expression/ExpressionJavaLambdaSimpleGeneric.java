@@ -78,7 +78,7 @@ public class ExpressionJavaLambdaSimpleGeneric extends Expression {
 
         ClassWriter cw = new ZenClassWriter(ClassWriter.COMPUTE_FRAMES);
         cw.visitSource(getPosition().getFileName(), null);
-        cw.visit(Opcodes.V1_6, Opcodes.ACC_PUBLIC, clsName, createMethodSignature(), "java/lang/Object", new String[]{internal(interfaceClass)});
+        cw.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC, clsName, createMethodSignature(), "java/lang/Object", new String[]{internal(interfaceClass)});
 
         MethodOutput output = new MethodOutput(cw, Opcodes.ACC_PUBLIC, method.getName(), descriptor, null, null);
         output.position(getPosition());
