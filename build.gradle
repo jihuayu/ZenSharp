@@ -11,7 +11,7 @@ apply plugin: 'maven-publish'
 
 group = 'zensharp'
 archivesBaseName = 'ZenSharp'
-version = "0.1.0"
+version = "0.1.1"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -99,19 +99,10 @@ publishing {
             version project.version
             from components.java
 
-            // Adds the various artifacts
             artifact sourcesJar {
-
                 classifier 'sources'
             }
-            artifact javadocJar {
 
-                classifier 'javadoc'
-            }
-            artifact deobfJar {
-
-                classifier 'deobf'
-            }
         }
     }
 

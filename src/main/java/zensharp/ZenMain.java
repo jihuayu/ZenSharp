@@ -23,8 +23,8 @@ public class ZenMain {
         try {
             final StringJoiner builder = new StringJoiner("\n");
             builder.add("import test.Pt;");
-            builder.add("zenClass As extends Pt{}");
-            builder.add("var tt = As();");
+            builder.add("zenClass A extends Pt{}");
+            builder.add("var tt = A();");
             builder.add("tt.t();");
             //final String script = "println('hello');";
             final String script = builder.toString();
