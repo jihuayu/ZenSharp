@@ -1,6 +1,6 @@
 # ZenSharp
 
-一个面向对象的嵌入式 JVM 脚本语言，来源与 ZenScript。
+一个面向对象的嵌入式 JVM 脚本语言，来源于 ZenScript。
 
 ## 基本语言特性
 
