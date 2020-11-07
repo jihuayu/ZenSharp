@@ -1,10 +1,16 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
+        classpath'net.sf.proguard:proguard-gradle:6.2.2'
     }
 }
 
-
+apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
@@ -15,7 +21,22 @@ version = "0.1.1"
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+shadowJar {
+    baseName = archivesBaseName
+    classifier = "all"
+    version = version
+}
 
+task proguard(type: proguard.gradle.ProGuardTask,dependsOn:shadowJar) {
+    ext{
+        injar= shadowJar
+        jar.classifier="proguard"
+        outJar= jar.archivePath
+    }
+    injars injar
+    outjars outJar
+    configuration 'proguard.txt'
+}
 //Shuts up javadoc failures
 if (JavaVersion.current().isJava8Compatible()) {
 
@@ -66,12 +87,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
     classifier = 'javadoc'
 }
-task deobfJar(type: Jar) {
 
-    description = 'Creates a JAR containing the non-obfuscated compiled code.'
-    from sourceSets.main.output
-    classifier = "deobf"
-}
 jar {
     manifest {
         attributes([
@@ -83,7 +99,6 @@ artifacts {
 
     archives sourcesJar
     archives javadocJar
-    archives deobfJar
 }
 
 test {

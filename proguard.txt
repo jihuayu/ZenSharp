@@ -1,0 +1,23 @@
+# 忽略警告
+-ignorewarnings
+#打印处理信息，失败时会打印堆栈信息
+-verbose
+
+#不能混淆泛型、抛出的异常、注解默认值、原始行号等
+-keepattributes Signature,Exceptions,*Annotation*,InnerClasses,Deprecated,EnclosingMethod
+
+# 保留注解不被混淆
+-keep public @interface * {
+    ** default (*);
+}
+
+# 避免类名被标记为final
+-optimizations !class/marking/final
+
+-libraryjars <java.home>/lib/rt.jar
+
+-keep public class zensharp.ZenShell {
+
+    public static void main(java.lang.String[]);
+
+}

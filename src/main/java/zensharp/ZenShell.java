@@ -7,6 +7,12 @@ import zensharp.impl.GenericRegistry;
 import java.io.File;
 
 public class ZenShell {
+
+    public static void println(String s) {
+        System.out.println(s);
+    }
+
+
     public static void main(String[] args) {
         if (args.length==0)
         {
@@ -17,7 +23,7 @@ public class ZenShell {
         final IZenErrorLogger errorLogger = new GenericErrorLogger(System.err);
         final GenericRegistry genericRegistry = new GenericRegistry(environment, errorLogger);
 
-        genericRegistry.registerGlobal("print", genericRegistry.getStaticFunction(ZenMain.class, "print", String.class));
+        genericRegistry.registerGlobal("print", genericRegistry.getStaticFunction(ZenShell.class, "println", String.class));
 
         try {
             ZenModule module = ZenModule.compileScriptFile(new File(args[0]),  environment, ZenMain.class.getClassLoader());

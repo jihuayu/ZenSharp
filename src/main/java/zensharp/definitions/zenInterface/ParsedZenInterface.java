@@ -90,7 +90,6 @@ public class ParsedZenInterface {
 
 
         Token keyword;
-        boolean constructorFlag = false;
         while ((keyword = parser.optional(ZenTokener.T_VAL, ZenTokener.T_VAR, ZenTokener.T_STATIC, ZenTokener.T_ZEN_CONSTRUCTOR, ZenTokener.T_FUNCTION)) != null) {
             final int type = keyword.getType();
             switch (type) {
