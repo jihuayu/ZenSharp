@@ -6,7 +6,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:5.0.0'
-        classpath'net.sf.proguard:proguard-gradle:6.2.2'
     }
 }
 
@@ -16,7 +15,7 @@ apply plugin: 'maven-publish'
 
 group = 'zensharp'
 archivesBaseName = 'ZenSharp'
-version = "0.1.1"
+version = "0.1.2"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -27,16 +26,6 @@ shadowJar {
     version = version
 }
 
-task proguard(type: proguard.gradle.ProGuardTask,dependsOn:shadowJar) {
-    ext{
-        injar= shadowJar
-        jar.classifier="proguard"
-        outJar= jar.archivePath
-    }
-    injars injar
-    outjars outJar
-    configuration 'proguard.txt'
-}
 //Shuts up javadoc failures
 if (JavaVersion.current().isJava8Compatible()) {
 
