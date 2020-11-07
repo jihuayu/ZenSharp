@@ -1,0 +1,42 @@
+package zensharp.type.casting;
+
+import zensharp.compiler.IEnvironmentMethod;
+import zensharp.type.ZenType;
+import zensharp.type.natives.IJavaMethod;
+
+/**
+ * @author Stan
+ */
+public class CastingRuleStaticMethod implements ICastingRule {
+
+    private final IJavaMethod method;
+    private final ICastingRule base;
+
+    public CastingRuleStaticMethod(IJavaMethod method) {
+        this.method = method;
+        this.base = null;
+    }
+
+    public CastingRuleStaticMethod(IJavaMethod method, ICastingRule base) {
+        this.method = method;
+        this.base = base;
+    }
+
+    @Override
+    public void compile(IEnvironmentMethod method) {
+        if(base != null)
+            base.compile(method);
+
+        this.method.invokeStatic(method.getOutput());
+    }
+
+    @Override
+    public ZenType getInputType() {
+        return method.getParameterTypes()[0];
+    }
+
+    @Override
+    public ZenType getResultingType() {
+        return method.getReturnType();
+    }
+}

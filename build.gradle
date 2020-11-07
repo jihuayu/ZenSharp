@@ -9,13 +9,9 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
-group = 'zenscript'
-archivesBaseName = 'ZenScript'
-version = "1.0.0"
-
-if(project.hasProperty("craftTweakerVersion")){
-version = ext.craftTweakerVersion
-}
+group = 'zensharp'
+archivesBaseName = 'ZenSharp'
+version = "0.1.0"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -32,6 +28,7 @@ if (JavaVersion.current().isJava8Compatible()) {
         }
     }
 }
+
 repositories {
     mavenCentral()
     maven {
@@ -43,9 +40,6 @@ repositories {
 dependencies {
     compile group: 'org.ow2.asm', name: 'asm-debug-all', version: '5.2'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-
-
-//    compile 'org.ow2.asm:asm-debug-all:6.0_BETA'
 
     testCompile(
             'org.junit.jupiter:junit-jupiter-api:5.0.1'
@@ -80,7 +74,6 @@ task deobfJar(type: Jar) {
     classifier = "deobf"
 }
 
-//Adds the artifact types added by this script to the actual artifacts list.
 artifacts {
 
     archives sourcesJar

@@ -1,0 +1,39 @@
+package zensharp.expression;
+
+import zensharp.compiler.IEnvironmentMethod;
+import zensharp.type.ZenType;
+import zensharp.util.ZenPosition;
+
+/**
+ * @author Stan
+ */
+public class ExpressionStringIndex extends Expression {
+
+    private final Expression source;
+    private final Expression index;
+
+    public ExpressionStringIndex(ZenPosition position, Expression source, Expression index) {
+        super(position);
+
+        this.source = source;
+        this.index = index;
+    }
+
+    @Override
+    public ZenType getType() {
+        return ZenType.STRING;
+    }
+
+    @Override
+    public void compile(boolean result, IEnvironmentMethod environment) {
+        source.compile(result, environment);
+        index.compile(result, environment);
+
+        if(result) {
+            environment.getOutput().dup();
+            environment.getOutput().iConst1();
+            environment.getOutput().iAdd();
+            environment.getOutput().invokeVirtual(String.class, "substring", String.class, int.class, int.class);
+        }
+    }
+}
