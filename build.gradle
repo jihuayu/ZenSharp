@@ -5,7 +5,6 @@ buildscript {
 }
 
 
-
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
@@ -73,7 +72,13 @@ task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = "deobf"
 }
-
+jar {
+    manifest {
+        attributes([
+                "Main-Class": "zensharp.ZenShell"
+        ])
+    }
+}
 artifacts {
 
     archives sourcesJar
@@ -83,7 +88,7 @@ artifacts {
 
 test {
     useJUnitPlatform()
-    testLogging{
+    testLogging {
         events "PASSED", "FAILED", "SKIPPED"
     }
 }

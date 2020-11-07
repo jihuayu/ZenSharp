@@ -27,11 +27,7 @@ public class ZenMain {
 //            builder.add("interface A{");
 //            builder.add("fun pp() as void;");
 //            builder.add("}");
-//            builder.add("class B impl A{");
-//            builder.add("fun pp() as void{");
-//            builder.add("println('111');");
-//            builder.add("}");
-//            builder.add("}");
+            builder.add("zenClass name {zenConstructor() {} function method() {}} name().method();");
 //            builder.add("var b = B();");
 //            builder.add("b.pp();");
 
