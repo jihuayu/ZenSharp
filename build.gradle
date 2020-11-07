@@ -47,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.ow2.asm', name: 'asm-debug-all', version: '5.2'
+    compile group: 'org.ow2.asm', name: 'asm-commons', version: '5.2'
 
     testCompile(
             'org.junit.jupiter:junit-jupiter-api:5.0.1'
