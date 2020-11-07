@@ -3,9 +3,6 @@ package zensharp.type.natives;
 import org.objectweb.asm.Label;
 import zensharp.compiler.IEnvironmentGlobal;
 
-import zensharp.dump.IDumpConvertable;
-import zensharp.dump.IDumpable;
-import zensharp.dump.types.DumpIJavaMethod;
 import zensharp.type.ZenType;
 import zensharp.type.casting.CastingRuleVirtualMethod;
 import zensharp.type.casting.ICastingRuleDelegate;
@@ -16,7 +13,7 @@ import java.util.*;
 /**
  * @author Stanneke
  */
-public class ZenNativeCaster implements IDumpConvertable {
+public class ZenNativeCaster {
 
     private final IJavaMethod method;
 
@@ -86,8 +83,4 @@ public class ZenNativeCaster implements IDumpConvertable {
         output.label(skip2);
     }
     
-    @Override
-    public List<? extends IDumpable> asDumpedObject() {
-        return Collections.singletonList(new DumpIJavaMethod(method));
-    }
 }

@@ -5,6 +5,7 @@ package zensharp;
 import zensharp.definitions.Import;
 import zensharp.definitions.ParsedFunction;
 import zensharp.definitions.ParsedGlobalValue;
+import zensharp.definitions.ParsedTypeDeclare;
 import zensharp.definitions.zenInterface.ParsedZenInterface;
 import zensharp.definitions.zenclasses.ParsedZenClass;
 import zensharp.expression.partial.IPartialExpression;
@@ -44,6 +45,7 @@ public class ZenParsedFile {
     private final Map<String, ParsedFunction> functions;
     private final Map<String, ParsedGlobalValue> globals = new LinkedHashMap<>();
     private final Map<String, ParsedZenClass> classes = new HashMap<>();
+    private final Map<String, ZenType> types = new HashMap<>();
     private final List<Statement> statements;
     private final IEnvironmentGlobal environmentScript;
     
@@ -139,6 +141,9 @@ public class ZenParsedFile {
                     environment.error(function.getPosition(), "function " + function.getName() + " already exists");
                 }
                 functions.put(function.getName(), function);
+            }else if(next.getType() == ZenTokener.T_TYPE) {
+                ParsedTypeDeclare typeDeclare = ParsedTypeDeclare.parse(tokener,environmentScript);
+                environmentScript.putValue(typeDeclare.getName(),new SymbolType(typeDeclare.getType()),typeDeclare.getPosition());
             } else if(next.getType() == ZenTokener.T_ZEN_CLASS) {
                 ParsedZenClass parsedZenClass = ParsedZenClass.parse(tokener, environmentScript);
                 if(classes.containsKey(parsedZenClass.name))

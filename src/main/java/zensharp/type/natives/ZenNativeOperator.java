@@ -1,14 +1,11 @@
 package zensharp.type.natives;
 
-import com.google.gson.*;
 import zensharp.annotations.OperatorType;
-import zensharp.dump.IDumpable;
-import zensharp.dump.types.DumpIJavaMethod;
 
 /**
  * @author Stanneke
  */
-public class ZenNativeOperator implements IDumpable {
+public class ZenNativeOperator {
     
     private final OperatorType operator;
     private final IJavaMethod method;
@@ -25,12 +22,5 @@ public class ZenNativeOperator implements IDumpable {
     public IJavaMethod getMethod() {
         return method;
     }
-    
-    @Override
-    public JsonElement serialize(JsonSerializationContext context) {
-        JsonObject obj = new DumpIJavaMethod(method).serialize(context);
-        obj.addProperty("operator", operator.toString());
-        
-        return obj;
-    }
+
 }

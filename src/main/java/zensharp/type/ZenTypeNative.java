@@ -8,12 +8,8 @@ import zensharp.annotations.*;
 import zensharp.compiler.IEnvironmentGlobal;
 import zensharp.compiler.IEnvironmentMethod;
 import zensharp.compiler.ITypeRegistry;
-import zensharp.dump.types.DumpZenType;
-import zensharp.dump.types.DumpZenTypeNative;
 
 import zensharp.expression.partial.IPartialExpression;
-
-
 
 import zensharp.util.IAnyDefinition;
 import zensharp.util.MethodOutput;
@@ -1118,11 +1114,6 @@ public class ZenTypeNative extends ZenType {
             // TODO: implement
             AnyClassWriter.throwUnsupportedException(output, getName(), "hashCode");
         }
-    }
-    
-    @Override
-    public List<DumpZenType> asDumpedObject() {
-        return Collections.singletonList(new DumpZenTypeNative(toJavaClass(), getName(), members, staticMembers, casters, trinaryOperators, binaryOperators, unaryOperators));
     }
     
     private class ZenNativeConstructor {

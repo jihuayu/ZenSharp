@@ -10,8 +10,6 @@ import zensharp.ZenParsedFile;
 import zensharp.ZenTokener;
 import zensharp.annotations.CompareType;
 import zensharp.annotations.OperatorType;
-import zensharp.dump.IDumpConvertable;
-import zensharp.dump.types.DumpZenType;
 import zensharp.expression.Expression;
 import zensharp.expression.partial.IPartialExpression;
 
@@ -33,7 +31,7 @@ import zensharp.util.ZenTypeUtil;
 import java.io.IOException;
 import java.util.*;
 
-public abstract class ZenType implements IDumpConvertable {
+public abstract class ZenType {
     
     public static final ZenTypeAny ANY = ZenTypeAny.INSTANCE;
     public static final ZenTypeBool BOOL = new ZenTypeBool();
@@ -397,11 +395,7 @@ public abstract class ZenType implements IDumpConvertable {
             return false;
         return other instanceof ZenType && (Objects.equals(this.getName(), ((ZenType) other).getName()) || Objects.equals(this.toJavaClass(), ((ZenType) other).toJavaClass()));
     }
-    
-    @Override
-    public List<DumpZenType> asDumpedObject() {
-        return Collections.singletonList(new DumpZenType(toJavaClass(), getName()));
-    }
+
     
     public String getNameForInterfaceSignature() {
         return getName()

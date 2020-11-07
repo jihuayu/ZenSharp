@@ -1,7 +1,5 @@
 package zensharp.symbols;
 
-import zensharp.dump.IDumpable;
-
 import zensharp.type.ZenType;
 import zensharp.util.ZenPosition;
 import zensharp.expression.partial.IPartialExpression;
@@ -33,9 +31,5 @@ public class SymbolType implements IZenSymbol {
     public ZenType getType() {
         return type;
     }
-    
-    @Override
-    public List<? extends IDumpable> asDumpedObject() {
-        return type.asDumpedObject();
-    }
+
 }

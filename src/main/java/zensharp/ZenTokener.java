@@ -27,7 +27,7 @@ public class ZenTokener extends TokenStream {
     public static final int T_SQBRCLOSE = 8;
     public static final int T_DOT2 = 9;
     public static final int T_DOT = 10;
-    public static final int T_COMMA = 11;
+    public static final int T_COMMA = 11;  //,
     public static final int T_PLUSASSIGN = 12;
     public static final int T_PLUS = 13;
     public static final int T_MINUSASSIGN = 14;
@@ -57,8 +57,8 @@ public class ZenTokener extends TokenStream {
     public static final int T_LT = 35;
     public static final int T_GTEQ = 36;
     public static final int T_GT = 37;
-    public static final int T_EQ = 38;
-    public static final int T_ASSIGN = 39;
+    public static final int T_EQ = 38; //==
+    public static final int T_ASSIGN = 39; //=
     public static final int T_NOTEQ = 42;
     public static final int T_NOT = 43;
     public static final int T_DOLLAR = 44;
@@ -92,17 +92,18 @@ public class ZenTokener extends TokenStream {
     public static final int T_GLOBAL = 666;
     public static final int T_STATIC = 667;
     public static final int T_INSTANCEOF = 668;
+    public static final int T_TYPE = 669;
 
-    public static final int T_ZEN_EXTEND = 114514;
-    public static final int T_ZEN_IMPL = 4389438;
+    public static final int T_ZEN_EXTEND = 100001;
+    public static final int T_ZEN_IMPL = 100002;
 
-    public static final int T_ZEN_CLASS = 123456789;
-    public static final int T_ZEN_INTERFACE = 1314520;
-    public static final int T_ZEN_CONSTRUCTOR = 987654321;
+    public static final int T_ZEN_CLASS = 20001;
+    public static final int T_ZEN_INTERFACE = 20002;
+    public static final int T_ZEN_CONSTRUCTOR = 20003;
     
     private static final HashMap<String, Integer> KEYWORDS;
-    private static final String[] REGEXPS = {"#[^\n]*[\n\\e]", "//[^\n]*[\n\\e]", "/\\*[^\\*]*(\\*|\\*[^/\\*][^\\*]*)*\\*/", "[ \t\r\n]*", "[a-zA-Z_][a-zA-Z_0-9]*", "\\-?(0|[1-9][0-9]*)\\.[0-9]+([eE][\\+\\-]?[0-9]+)?[fFdD]?", "\\-?(0|[1-9][0-9]*)", "0x[A-Fa-f0-9]*", "\"([^\"\\\\]|\\\\([\'\"\\\\/bfnrt]|u[0-9a-fA-F]{4}))*\"", "\'([^\'\\\\]|\\\\([\'\"\\\\/bfnrt]|u[0-9a-fA-F]{4}))*\'", "\\{", "\\}", "\\[", "\\]", "\\.\\.", "\\.", ",", "\\+=", "\\+", "\\-=", "\\-", "\\*=", "\\*", "/=", "/", "%=", "%", "\\|=", "\\|\\|", "\\|", "&=", "&&", "&", "\\^=", "\\^", "\\?", ":", "\\(", "\\)", "~=", "~", ";", "<=", "<", ">=", ">", "==", "=", "!=", "!", "$"};
-    private static final int[] FINALS = {-1, -1, -1, -1, T_ID, T_FLOATVALUE, T_INTVALUE, T_INTVALUE, T_STRINGVALUE, T_STRINGVALUE, T_AOPEN, T_ACLOSE, T_SQBROPEN, T_SQBRCLOSE, T_DOT2, T_DOT, T_COMMA, T_PLUSASSIGN, T_PLUS, T_MINUSASSIGN, T_MINUS, T_MULASSIGN, T_MUL, T_DIVASSIGN, T_DIV, T_MODASSIGN, T_MOD, T_ORASSIGN, T_OR2, T_OR, T_ANDASSIGN, T_AND2, T_AND, T_XORASSIGN, T_XOR, T_QUEST, T_COLON, T_BROPEN, T_BRCLOSE, T_TILDEASSIGN, T_TILDE, T_SEMICOLON, T_LTEQ, T_LT, T_GTEQ, T_GT, T_EQ, T_ASSIGN, T_NOTEQ, T_NOT, T_DOLLAR};
+    public static final String[] REGEXPS = {"#[^\n]*[\n\\e]", "//[^\n]*[\n\\e]", "/\\*[^\\*]*(\\*|\\*[^/\\*][^\\*]*)*\\*/", "[ \t\r\n]*", "[a-zA-Z_][a-zA-Z_0-9]*", "\\-?(0|[1-9][0-9]*)\\.[0-9]+([eE][\\+\\-]?[0-9]+)?[fFdD]?", "\\-?(0|[1-9][0-9]*)", "0x[A-Fa-f0-9]*", "\"([^\"\\\\]|\\\\([\'\"\\\\/bfnrt]|u[0-9a-fA-F]{4}))*\"", "\'([^\'\\\\]|\\\\([\'\"\\\\/bfnrt]|u[0-9a-fA-F]{4}))*\'", "\\{", "\\}", "\\[", "\\]", "\\.\\.", "\\.", ",", "\\+=", "\\+", "\\-=", "\\-", "\\*=", "\\*", "/=", "/", "%=", "%", "\\|=", "\\|\\|", "\\|", "&=", "&&", "&", "\\^=", "\\^", "\\?", ":", "\\(", "\\)", "~=", "~", ";", "<=", "<", ">=", ">", "==", "=", "!=", "!", "$"};
+    public static final int[] FINALS = {-1, -1, -1, -1, T_ID, T_FLOATVALUE, T_INTVALUE, T_INTVALUE, T_STRINGVALUE, T_STRINGVALUE, T_AOPEN, T_ACLOSE, T_SQBROPEN, T_SQBRCLOSE, T_DOT2, T_DOT, T_COMMA, T_PLUSASSIGN, T_PLUS, T_MINUSASSIGN, T_MINUS, T_MULASSIGN, T_MUL, T_DIVASSIGN, T_DIV, T_MODASSIGN, T_MOD, T_ORASSIGN, T_OR2, T_OR, T_ANDASSIGN, T_AND2, T_AND, T_XORASSIGN, T_XOR, T_QUEST, T_COLON, T_BROPEN, T_BRCLOSE, T_TILDEASSIGN, T_TILDE, T_SEMICOLON, T_LTEQ, T_LT, T_GTEQ, T_GT, T_EQ, T_ASSIGN, T_NOTEQ, T_NOT, T_DOLLAR};
     private static final CompiledDFA DFA = new NFA(REGEXPS, FINALS).toDFA().optimize().compile();
     
     public final boolean ignoreBracketErrors;
@@ -119,7 +120,7 @@ public class ZenTokener extends TokenStream {
         KEYWORDS.put("double", T_DOUBLE);
         KEYWORDS.put("string", T_STRING);
         KEYWORDS.put("function", T_FUNCTION);
-//        KEYWORDS.put("fun", T_FUNCTION);
+//        KEYWORDS.put("fn", T_FUNCTION);
         KEYWORDS.put("in", T_IN);
         KEYWORDS.put("has", T_IN);
         KEYWORDS.put("void", T_VOID);
@@ -144,6 +145,7 @@ public class ZenTokener extends TokenStream {
         KEYWORDS.put("false", T_FALSE);
         
         KEYWORDS.put("import", T_IMPORT);
+        KEYWORDS.put("type", T_TYPE);
 
         KEYWORDS.put("extends", T_ZEN_EXTEND);
         KEYWORDS.put("implements", T_ZEN_IMPL);

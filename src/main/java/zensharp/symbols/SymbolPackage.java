@@ -1,7 +1,6 @@
 package zensharp.symbols;
 
 import zensharp.IZenErrorLogger;
-import zensharp.dump.IDumpable;
 
 
 import zensharp.expression.partial.IPartialExpression;
@@ -82,14 +81,5 @@ public class SymbolPackage implements IZenSymbol {
     public String toString() {
         return "SymbolPackage: " + name;
     }
-    
-    @Override
-    public List<? extends IDumpable> asDumpedObject() {
-        List<IDumpable> list = new ArrayList<>();
-        for(Map.Entry<String, IZenSymbol> entry : members.entrySet()) {
-            list.addAll(entry.getValue().asDumpedObject());
-        }
-        
-        return list;
-    }
+
 }

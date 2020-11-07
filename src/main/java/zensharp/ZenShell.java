@@ -19,6 +19,11 @@ public class ZenShell {
             System.out.println("Need args!");
             return;
         }
+//        for (int i = 0;i<ZenTokener.FINALS.length;i++){
+//            if (ZenTokener.REGEXPS[i].equals("=")){
+//                System.out.println(ZenTokener.FINALS[i]);
+//            }
+//        }
         final IZenCompileEnvironment environment = new GenericCompileEnvironment();
         final IZenErrorLogger errorLogger = new GenericErrorLogger(System.err);
         final GenericRegistry genericRegistry = new GenericRegistry(environment, errorLogger);
