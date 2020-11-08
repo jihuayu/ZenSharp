@@ -59,7 +59,7 @@ public class ParsedZenClassField {
     }
 
     public void visit(ClassWriter newClass) {
-        newClass.visitField(!isStatic ? Opcodes.ACC_PUBLIC : (Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC), name, type.toASMType().getDescriptor(), null, null).visitEnd();
+        newClass.visitField(!isStatic ? Opcodes.ACC_PUBLIC : (Opcodes.ACC_PUBLIC | Opcodes.ACC_STATIC), name, type.toASMType().getDescriptor(), type.getSignature(), null).visitEnd();
     }
 
     public void writeAll(IEnvironmentMethod clinitEnvironment, ClassWriter newClass, MethodOutput clinit, String className) {
@@ -113,14 +113,14 @@ public class ParsedZenClassField {
         public void invokeVirtual(MethodOutput output) {
             if(isStatic())
                 if(isSetter)
-                    output.putStaticField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.getSignature());
+                    output.putStaticField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.toASMType().getDescriptor());
                 else
-                    output.getStaticField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.getSignature());
+                    output.getStaticField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.toASMType().getDescriptor());
             else {
                 if(isSetter)
-                    output.putField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.getSignature());
+                    output.putField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.toASMType().getDescriptor());
                 else
-                    output.getField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.getSignature());
+                    output.getField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.toASMType().getDescriptor());
             }
         }
 
@@ -128,7 +128,7 @@ public class ParsedZenClassField {
         public void invokeStatic(MethodOutput output) {
             if(!isStatic())
                 throw new IllegalArgumentException("Cannot invoke nonstatic method from a static context");
-            output.getStaticField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.getSignature());
+            output.getStaticField(ParsedZenClassField.this.ownerName, ParsedZenClassField.this.name, ParsedZenClassField.this.type.toASMType().getDescriptor());
         }
 
         @Override

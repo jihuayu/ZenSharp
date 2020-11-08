@@ -5,8 +5,6 @@ import zensharp.annotations.CompareType;
 import zensharp.annotations.OperatorType;
 import zensharp.compiler.IEnvironmentGlobal;
 import zensharp.compiler.IEnvironmentMethod;
-import zensharp.definitions.zenInterface.ParsedZenInterface;
-import zensharp.definitions.zenclasses.ParsedZenClass;
 import zensharp.expression.Expression;
 import zensharp.expression.ExpressionNull;
 import zensharp.expression.partial.IPartialExpression;
@@ -14,62 +12,57 @@ import zensharp.type.casting.ICastingRuleDelegate;
 import zensharp.util.Pair;
 import zensharp.util.ZenPosition;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public class ZenTypeZenInterface extends ZenType {
+public class ZenTypeGeneric extends ZenType {
 
-    public final ParsedZenInterface zenClass;
-    public final List<Pair<String, ZenType>> generic;
+    private final ZenType type;
+    private final String name;
 
-    public ZenTypeZenInterface(ParsedZenInterface zenClass) {
-        this(zenClass,new LinkedList<>());
-    }
-
-    public ZenTypeZenInterface(ParsedZenInterface zenClass, List<Pair<String, ZenType>> generic) {
-        this.generic = generic;
-        this.zenClass = zenClass;
+    public ZenTypeGeneric(String name,ZenType type){
+        this.type = type;
+        this.name = name;
     }
 
     @Override
     public Expression unary(ZenPosition position, IEnvironmentGlobal environment, Expression value, OperatorType operator) {
-        throw new UnsupportedOperationException("Cannot use unary operators for ZenClasses");
+        return type.unary(position, environment, value, operator);
     }
 
     @Override
     public Expression binary(ZenPosition position, IEnvironmentGlobal environment, Expression left, Expression right, OperatorType operator) {
-        throw new UnsupportedOperationException("Classes have no binary operators");
+        return type.binary(position, environment, left, right, operator);
     }
 
     @Override
     public Expression trinary(ZenPosition position, IEnvironmentGlobal environment, Expression first, Expression second, Expression third, OperatorType operator) {
-        throw new UnsupportedOperationException("Classes don't have ternary operators");
+        return type.trinary(position, environment, first, second, third, operator);
     }
 
     @Override
     public Expression compare(ZenPosition position, IEnvironmentGlobal environment, Expression left, Expression right, CompareType type) {
-        throw new UnsupportedOperationException("Why would you compare friggin classes?");
+        return this.type.compare(position, environment, left, right, type);
     }
 
     @Override
     public IPartialExpression getMember(ZenPosition position, IEnvironmentGlobal environment, IPartialExpression value, String name) {
-        return zenClass.getMember(position, environment, value, name, false);
+            return type.getMember(position, environment, value, name);
     }
 
     @Override
     public IPartialExpression getStaticMember(ZenPosition position, IEnvironmentGlobal environment, String name) {
-        return zenClass.getMember(position, environment, null, name, true);
+        return type.getStaticMember(position, environment, name);
     }
 
     @Override
     public Expression call(ZenPosition position, IEnvironmentGlobal environment, Expression receiver, Expression... arguments) {
-        throw new UnsupportedOperationException("Why would you call interface?");
-
+        return type.call(position, environment, receiver, arguments);
     }
 
     @Override
     public void constructCastingRules(IEnvironmentGlobal environment, ICastingRuleDelegate rules, boolean followCasters) {
-
+        type.constructCastingRules(environment, rules, followCasters);
     }
 
     @Override
@@ -79,55 +72,41 @@ public class ZenTypeZenInterface extends ZenType {
 
     @Override
     public Class toJavaClass() {
-        return zenClass.thisClass;
+        return type.toJavaClass();
     }
 
     @Override
     public Type toASMType() {
-        return toJavaClass() != null ? Type.getType(toJavaClass()) : Type.getType(getSignature());
+        return type.toASMType();
     }
 
     @Override
     public int getNumberType() {
-        return 0;
+        return type.getNumberType();
     }
 
     @Override
     public String getSignature() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("L");
-        sb.append(zenClass.className);
-        for (Pair<String, ZenType> i : generic){
-            sb.append("<");
-            sb.append(i.getValue().getSignature());
-            sb.append(">");
-        }
-        sb.append(";");
-        return sb.toString();
+        return "T"+name+";";
     }
 
     @Override
     public boolean isPointer() {
-        return false;
+        return type.isPointer();
     }
 
     @Override
     public String getAnyClassName(IEnvironmentGlobal environment) {
-        return zenClass.className;
+        return type.getAnyClassName(environment);
     }
 
     @Override
     public String getName() {
-        return zenClass.className;
+        return type.getName();
     }
 
     @Override
     public Expression defaultValue(ZenPosition position) {
         return new ExpressionNull(position);
-    }
-
-    @Override
-    public ZenType[] predictCallTypes(int numArguments) {
-        return new ZenType[0];
     }
 }

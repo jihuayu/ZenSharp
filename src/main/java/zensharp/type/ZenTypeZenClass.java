@@ -8,19 +8,29 @@ import zensharp.annotations.OperatorType;
 import zensharp.definitions.zenclasses.ParsedZenClass;
 
 import zensharp.expression.partial.IPartialExpression;
+import zensharp.parser.Token;
 import zensharp.type.casting.ICastingRuleDelegate;
+import zensharp.util.Pair;
 import zensharp.util.ZenPosition;
 import zensharp.compiler.IEnvironmentGlobal;
 import zensharp.compiler.IEnvironmentMethod;
 import zensharp.expression.Expression;
 import zensharp.expression.ExpressionNull;
 
+import java.util.*;
+
 public class ZenTypeZenClass extends ZenType {
 
     public final ParsedZenClass zenClass;
 
-    public ZenTypeZenClass(ParsedZenClass zenClass) {
+    public final List<Pair<String, ZenType>> generic;
 
+    public ZenTypeZenClass(ParsedZenClass zenClass) {
+        this(zenClass,new LinkedList<>());
+    }
+
+    public ZenTypeZenClass(ParsedZenClass zenClass, List<Pair<String, ZenType>> generic) {
+        this.generic = generic;
         this.zenClass = zenClass;
     }
 
@@ -86,7 +96,17 @@ public class ZenTypeZenClass extends ZenType {
 
     @Override
     public String getSignature() {
-        return "L" + zenClass.className + ";";
+        StringBuilder sb = new StringBuilder();
+        sb.append("L");
+        sb.append(zenClass.className);
+        for (Pair<String, ZenType> i : generic){
+            sb.append("<");
+            sb.append(i.getValue().getSignature());
+            sb.append(">");
+        }
+        sb.append(";");
+
+        return sb.toString();
     }
 
     @Override
@@ -113,4 +133,5 @@ public class ZenTypeZenClass extends ZenType {
     public ZenType[] predictCallTypes(int numArguments) {
         return zenClass.predictCallTypes(numArguments);
     }
+
 }

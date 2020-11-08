@@ -18,9 +18,6 @@ public class ZenMain {
 
         genericRegistry.registerGlobal("println", genericRegistry.getStaticFunction(ZenMain.class, "println", String.class));
         genericRegistry.registerNativeClass(ZenTestClassA.class);
-        genericRegistry.registerNativeClass(ZenTestClassA.PT.class);
-        genericRegistry.registerNativeClass(ZenTestClassA.PI.class);
-        genericRegistry.registerNativeClass(ZenTestClassA.PI2.class);
 
         try {
             final StringJoiner builder = new StringJoiner("\n");

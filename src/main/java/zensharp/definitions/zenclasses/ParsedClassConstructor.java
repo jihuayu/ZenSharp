@@ -3,6 +3,7 @@ package zensharp.definitions.zenclasses;
 import org.objectweb.asm.*;
 import zensharp.ZenTokener;
 
+import zensharp.definitions.ParsedFunctionArgument;
 import zensharp.expression.Expression;
 import zensharp.statements.Statement;
 import zensharp.symbols.SymbolArgument;
@@ -26,16 +27,24 @@ public class ParsedClassConstructor {
     final ZenType[] types;
     private final String[] names;
     private final List<Statement> statements;
+    private final String signature;
 
     private ParsedClassConstructor(List<ZenType> types, List<String> names, List<Statement> statements) {
         this.types = types.toArray(new ZenType[types.size()]);
         this.names = names.toArray(new String[names.size()]);
         this.statements = statements;
+
+        StringBuilder sig = new StringBuilder();
+        sig.append("(");
+        for(ZenType argument : types) {
+            sig.append(argument.getSignature());
+        }
+        sig.append(")");
+        sig.append("V");
+        signature = sig.toString();
     }
     private ParsedClassConstructor() {
-        this.types = new ZenType[0];
-        this.names = new String[0];
-        this.statements = new LinkedList<>();
+        this(new LinkedList<>(),new LinkedList<>(),new LinkedList<>());
     }
 
     static ParsedClassConstructor parse(ZenTokener parser, IEnvironmentGlobal environment) {
@@ -75,7 +84,7 @@ public class ParsedClassConstructor {
     }
 
     public void writeAll(IEnvironmentClass environmentNewClass, ClassVisitor newClass, List<ParsedZenClassField> nonStatics, String className, ZenPosition position, ZenType parent) {
-        final MethodOutput init = new MethodOutput(newClass, Opcodes.ACC_PUBLIC, "<init>", this.getDescription(), null, null);
+        final MethodOutput init = new MethodOutput(newClass, Opcodes.ACC_PUBLIC, "<init>", this.getDescription(), signature, null);
         EnvironmentMethod initEnvironment = new EnvironmentMethod(init, environmentNewClass);
         init.start();
         init.loadObject(0);

@@ -4,29 +4,24 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import zensharp.ZenTokener;
 import zensharp.compiler.*;
-import zensharp.definitions.ParsedFunction;
+import zensharp.definitions.IGetGenerics;
 import zensharp.definitions.ParsedFunctionDeclare;
-import zensharp.definitions.zenclasses.ParsedClassConstructor;
-import zensharp.definitions.zenclasses.ParsedZenClass;
-import zensharp.definitions.zenclasses.ParsedZenClassField;
-import zensharp.definitions.zenclasses.ParsedZenClassMethod;
-import zensharp.expression.Expression;
+import zensharp.definitions.ParsedGeneric;
 import zensharp.expression.ExpressionInvalid;
 import zensharp.expression.ExpressionThis;
 import zensharp.expression.partial.IPartialExpression;
 import zensharp.parser.Token;
+import zensharp.symbols.SymbolGeneric;
 import zensharp.symbols.SymbolType;
-import zensharp.type.ZenType;
-import zensharp.type.ZenTypeNative;
-import zensharp.type.ZenTypeZenClass;
-import zensharp.type.ZenTypeZenInterface;
+import zensharp.type.*;
 import zensharp.type.natives.ZenNativeMember;
-import zensharp.util.MethodOutput;
+import zensharp.util.Pair;
 import zensharp.util.ZenPosition;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class ParsedZenInterface {
+public class ParsedZenInterface implements IGetGenerics {
 
     public final ZenPosition position;
     public final String name;
@@ -37,11 +32,13 @@ public class ParsedZenInterface {
 
     private final EnvironmentScript classEnvironment;
 
+    private final List<Pair<Token, ZenType>> generics = new LinkedList<>();
     public Class<?> thisClass;
     private final List<ParsedZenInterfaceMethod> methods = new LinkedList<>();
     private final Map<String, ZenNativeMember> members = new LinkedHashMap<>();
 
-    public ParsedZenInterface(ZenPosition position, String name, String className, EnvironmentScript classEnvironment, ZenType parentClassType, List<ZenType> implClassNames) {
+    public ParsedZenInterface(ZenPosition position, String name, String className, EnvironmentScript classEnvironment, List<ZenType> implClassNames,List<Pair<Token, ZenType>> generics) {
+        this.generics.addAll(generics);
         this.position = position;
         this.implClassTypes.addAll(implClassNames);
         this.name = name;
@@ -57,19 +54,29 @@ public class ParsedZenInterface {
         parser.next();
 
         final Token id = parser.required(ZenTokener.T_ID, "ClassName required");
-        ZenType parentClass = null;
+        List<Pair<Token, ZenType>> generics = new LinkedList<>();
+        if (parser.optional(ZenTokener.T_LT) != null) {
+            ParsedGeneric g = ParsedGeneric.parse(parser,environmentGlobal);
+            generics.add(new Pair<>(g.getToken(), g.getType()));
+            while (parser.optional(ZenTokener.T_COMMA) != null) {
+                g = ParsedGeneric.parse(parser,environmentGlobal);
+                generics.add(new Pair<>(g.getToken(), g.getType()));
+            }
+            parser.required(ZenTokener.T_GT, "> required");
+        }
+        for (Pair<Token,ZenType> i : generics) {
+            ZenType type = i.getValue();
+            Token token = i.getKey();
+            classEnvironment.putValue(token.getValue(), new SymbolType(type), token.getPosition());
+        }
+
         List<ZenType> implClass = new ArrayList<>();
         if (parser.isNext(ZenTokener.T_ZEN_EXTEND)) {
             parser.next();
-            ZenType type = ZenType.read(parser, environmentGlobal);
-            parentClass = type;
-        }
-        if (parser.isNext(ZenTokener.T_ZEN_IMPL)) {
-            parser.next();
-            ZenType type = ZenType.read(parser, environmentGlobal);
+            ZenType type = ZenType.read(parser, classEnvironment);
             implClass.add(type);
             if (parser.optional(ZenTokener.T_COMMA) != null) {
-                type = ZenType.read(parser, environmentGlobal);
+                type = ZenType.read(parser, classEnvironment);
                 implClass.add(type);
             }
         }
@@ -77,7 +84,9 @@ public class ParsedZenInterface {
 
         final String name = id.getValue();
         final ZenPosition position = id.getPosition();
-        ParsedZenInterface classTemplate = new ParsedZenInterface(position, name, environmentGlobal.makeClassNameWithMiddleName(position.getFile().getClassName() + "_" + name + "_"), classEnvironment, parentClass, implClass);
+        ParsedZenInterface classTemplate = new ParsedZenInterface(position, name,
+                environmentGlobal.makeClassNameWithMiddleName(position.getFile().getClassName() + "_" + name + "_"),
+                classEnvironment, implClass,generics);
         classEnvironment.putValue(name, new SymbolType(classTemplate.type), classTemplate.position);
         for (ZenType i : classTemplate.implClassTypes){
             if (i instanceof ZenTypeZenInterface){
@@ -133,9 +142,19 @@ public class ParsedZenInterface {
     public void writeClass(IEnvironmentGlobal environmentGlobal) {
         final ClassWriter newClass = new ZenClassWriter(ClassWriter.COMPUTE_FRAMES);
         newClass.visitSource(position.getFileName(), null);
+        String parentSign = "Ljava/lang/Object;";
 
+        StringBuilder generic = new StringBuilder();
+        for (Pair<Token, ZenType> i : generics) {
+            generic.append(i.getKey().getValue());
+            generic.append(":");
+            ZenType type = i.getValue();
+            generic.append(type.getSignature());
+        }
+        String sign = "<" + generic.toString() + ">" + parentSign;
+        //TODO:接口的 sign
         String[] impl = implClassTypes.stream().map(i -> i.toJavaClass().getName().replace(".", "/")).toArray(String[]::new);
-        newClass.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC +  + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE, className, null, "java/lang/Object", impl);
+        newClass.visit(Opcodes.V1_8, Opcodes.ACC_PUBLIC +  + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE, className, sign, "java/lang/Object", impl);
 
         final EnvironmentClass environmentNewClass = new EnvironmentClass(newClass, classEnvironment);
         environmentNewClass.putValue("this", position1 -> new ExpressionThis(position1, type), position);
@@ -152,5 +171,9 @@ public class ParsedZenInterface {
     private void writeMethods(ClassWriter newClass, EnvironmentClass environmentNewClass) {
         for (ParsedZenInterfaceMethod parsedMethod : methods)
             parsedMethod.writeAll(newClass, environmentNewClass);
+    }
+
+    public List<Pair<Token, ZenType>> getGenerics() {
+        return generics;
     }
 }

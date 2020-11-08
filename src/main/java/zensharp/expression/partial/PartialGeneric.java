@@ -14,12 +14,14 @@ import zensharp.util.ZenPosition;
 /**
  * @author Stan
  */
-public class PartialType implements IPartialExpression {
+public class PartialGeneric implements IPartialExpression {
 
     private final ZenPosition position;
     private final ZenType type;
+    private final String name;
 
-    public PartialType(ZenPosition position, ZenType type) {
+    public PartialGeneric(ZenPosition position,String name, ZenType type) {
+        this.name = name;
         this.position = position;
         this.type = type;
     }

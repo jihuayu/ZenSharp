@@ -50,7 +50,8 @@ dependencies {
     compile group: 'org.ow2.asm', name: 'asm-commons', version: '5.2'
 
     testCompile(
-            'org.junit.jupiter:junit-jupiter-api:5.0.1'
+            'org.junit.jupiter:junit-jupiter-api:5.0.1',
+            'org.ow2.asm:asm-util:5.2'
     )
 
     testRuntime(
@@ -123,4 +124,8 @@ publishing {
             }
         }
     }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }

@@ -54,9 +54,9 @@ public class ZenTokener extends TokenStream {
     public static final int T_TILDE = 32;
     public static final int T_SEMICOLON = 33; //;
     public static final int T_LTEQ = 34;
-    public static final int T_LT = 35;
+    public static final int T_LT = 35; //<
     public static final int T_GTEQ = 36;
-    public static final int T_GT = 37;
+    public static final int T_GT = 37; //>
     public static final int T_EQ = 38; //==
     public static final int T_ASSIGN = 39; //=
     public static final int T_NOTEQ = 42;
